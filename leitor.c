@@ -25,6 +25,7 @@
     int running = 1;
     void *shared_memory = (void *)0;
     struct shared_use_st *shared_stuff;
+    shared_stuff->nl = 0;
     int shmid;
 
      // Criar ou acessar o semáforo
@@ -74,27 +75,28 @@
      //shared_stuff->written_by_you = 0;
      while(1) {
             //if (shared_stuff->written_by_you) { // Verdadeiro quando alguém escreveu
-            printf("Leitor: Tentando bloquear o semáforo mutex (down)...\n");//depuração 
-            int sem_val_mutex = semctl(mutex, 0, GETVAL); // depuração
-            printf("Leitor: Valor atual do semáforo mutex = %d\n", sem_val_mutex); // depuração
+            //printf("Leitor: Tentando bloquear o semáforo mutex (down)...\n");//depuração 
+            //int sem_val_mutex = semctl(mutex, 0, GETVAL); // depuração
+            //printf("Leitor: Valor atual do semáforo mutex = %d\n", sem_val_mutex); // depuração
             down(mutex);
-             printf("Leitor: Entrando na seção crítica (nl = %d)\n", shared_stuff->nl);//Depuração
+             //printf("Leitor Antes: nl = %d\n", shared_stuff->nl);//Depuração 
              shared_stuff->nl++;
+             //printf("Leitor Depois: nl = %d\n", shared_stuff->nl);//Depuração 
              if (shared_stuff->nl == 1) {
                  down(db); // O primeiro leitor nesse caso vai bloquear os escritores
              }
-             printf("Leitor: Liberando o semáforo mutex (up)...\n");
+             //printf("Leitor: Liberando o semáforo mutex (up)...\n");
              up(mutex);
              //printf("You wrote: %s", shared_stuff->some_text); 
              //sleep( rand() % 4 ); /* make the other process wait for us ! */
              //Leitura do compartilhado
-             printf("Leitor: Valor inicial de written_by_you = %d\n", shared_stuff->written_by_you); //depuração 
+             //printf("Leitor: Valor inicial de written_by_you = %d\n", shared_stuff->written_by_you); //depuração 
 
              if (shared_stuff->written_by_you == 1) {
                 printf("Leitor: Consumindo dados...\n");
                 printf("You wrote: %s", shared_stuff->some_text);
                 shared_stuff->written_by_you = 0; // Vai passar a vez para o escritor
-                printf("Leitor: Atualizou written_by_you para 0.\n"); // depuraçãoooo
+                //printf("Leitor: Atualizou written_by_you para 0.\n"); // depuraçãoooo
 
             }
              //sleep( 1 ); /* make the other process wait for us ! */
@@ -105,7 +107,7 @@
             //      running = 0;
             //  }
             if (shared_stuff->nl == 0) {
-                printf("Leitor: Liberando o semáforo db (up)...\n");//depuração
+                //printf("Leitor: Liberando o semáforo db (up)...\n");//depuração
                 up(db); // O último leitor nesse caso vai liberar os escritores
             }
              up(mutex);
@@ -132,7 +134,8 @@ static int set_semvalue(int sem_id)
 {
     union semun sem_union;
   
-    sem_union.val = 0;
+    //sem_union.val = 0;
+    sem_union.val = 0; // Inicializa o semáforo com 1, permitindo acesso
     if (semctl(sem_id, 0, SETVAL, sem_union) == -1) return(0);
     return(1);
 }

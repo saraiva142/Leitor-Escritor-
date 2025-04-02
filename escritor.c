@@ -88,17 +88,17 @@
         sleep(1);
     }
     while(1) {
-        // Espera até que o leitor consuma os dados
-        while (shared_stuff->written_by_you == 1) {
-            printf("Aguardando o consumidor...\n");
-            sleep(1);
-        }
+        // Espera até que o leitor consuma os dados <=== Isso está errado, não precisa depender do leitor
+        // while (shared_stuff->written_by_you == 1) {
+        //     printf("Aguardando o consumidor...\n");
+        //     sleep(1);
+        // }
          //while(shared_stuff->written_by_you == 1) {
-        printf("Escritor: Tentando bloquear o semáforo (down)...\n"); //depuração
-        int sem_val_db = semctl(db, 0, GETVAL); // depuração
-        printf("Escritor: Valor atual do semáforo db = %d\n", sem_val_db); // depuração
+        //printf("Escritor: Tentando bloquear o semáforo (down)...\n"); //depuração
+        //int sem_val_db = semctl(db, 0, GETVAL); // depuração
+        //printf("Escritor: Valor atual do semáforo db = %d\n", sem_val_db); // depuração
         down(db); //Vai bloquear e deixar exclusivo para escritores
-        printf("Escritor: Entrando na seção crítica\n"); //depuração
+        //printf("Escritor: Entrando na seção crítica\n"); //depuração
              //sleep(1);            
              //printf("waiting for client...\n");
          //}
@@ -107,7 +107,7 @@
          fgets(shared_stuff->some_text, TEXT_SZ, stdin);
          shared_stuff->written_by_you = 1; // Indica que o escritor está escrevendo
 
-         printf("Escritor: Liberando o semáforo (up)...\n"); //depuração
+         //printf("Escritor: Liberando o semáforo (up)...\n"); //depuração
          up(db); //Libera o semáforo para leitores
          sleep(1); // Simula o tempo de escrita
          
