@@ -47,6 +47,7 @@
             exit(EXIT_FAILURE);
         }
         printf("Semáforo db inicializado com sucesso.\n");
+        shared_stuff->nl = 0; // Inicializa o número de leitores
     } else {
         printf("Semáforo db já existente com valor: %d\n", sem_exists_db);
     }

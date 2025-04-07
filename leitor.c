@@ -25,7 +25,7 @@
     int running = 1;
     void *shared_memory = (void *)0;
     struct shared_use_st *shared_stuff;
-    shared_stuff->nl = 0;
+    //shared_stuff->nl = 0;
     int shmid;
 
      // Criar ou acessar o semáforo
